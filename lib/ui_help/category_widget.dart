@@ -52,12 +52,12 @@ class ExpenseTile extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.yellow[700],
                     ),
-                    child: Center(child: Icon(icon, color: Colors.black)),
+                    child: Center(child: Icon(icon, color: Colors.white)),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     title,
-                    style: GoogleFonts.lato(
+                    style: GoogleFonts.nunitoSans(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -71,14 +71,14 @@ class ExpenseTile extends StatelessWidget {
                   children: [
                     Text(
                       amount,
-                      style: GoogleFonts.lato(
+                      style: GoogleFonts.nunitoSans(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       date,
-                      style: GoogleFonts.lato(
+                      style: GoogleFonts.nunitoSans(
                         color: Colors.grey,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

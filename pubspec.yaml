@@ -40,6 +40,8 @@ dev_dependencies:
     sdk: flutter
   persistent_bottom_nav_bar_v2: ^6.1.0
   google_fonts: ^6.2.1
+  fl_chart: ^1.0.0
+  font_awesome_flutter: ^10.8.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

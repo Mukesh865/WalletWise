@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
                       children: [
                         Text(
                           'Welcome!',
-                          style: GoogleFonts.lato(
+                          style: GoogleFonts.nunitoSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: Theme.of(context).colorScheme.outline,
@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         Text(
                           'Mukesh',
-                          style: GoogleFonts.lato(
+                          style: GoogleFonts.nunitoSans(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.onBackground,
@@ -100,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    blurRadius: 2,
+                    blurRadius: 4,
                     color: Colors.grey.shade300,
                     offset: const Offset(5, 5),
                   ),
@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     Text(
                       'Total Balance',
-                      style: GoogleFonts.lato(
+                      style: GoogleFonts.nunitoSans(
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -121,7 +121,7 @@ class _MainScreenState extends State<MainScreen> {
                     SizedBox(height: 15),
                     Text(
                       '₹ 1000.00',
-                      style: GoogleFonts.lato(
+                      style:GoogleFonts.nunitoSans(
                         fontSize: 40,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
                                 children: [
                                   Text(
                                     'Income',
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.nunitoSans(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -162,7 +162,7 @@ class _MainScreenState extends State<MainScreen> {
                                   ),
                                   Text(
                                     '₹2500.00',
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.nunitoSans(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _MainScreenState extends State<MainScreen> {
                                 children: [
                                   Text(
                                     'Expense',
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.nunitoSans(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -201,7 +201,7 @@ class _MainScreenState extends State<MainScreen> {
                                   ),
                                   Text(
                                     '₹800.00',
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.nunitoSans(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -226,7 +226,7 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     Text(
                       'Transactions',
-                      style: GoogleFonts.lato(
+                      style: GoogleFonts.nunitoSans(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -235,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
                       onPressed: () {},
                       child: Text(
                         'View All',
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.nunitoSans(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
                           color: Colors.blue,

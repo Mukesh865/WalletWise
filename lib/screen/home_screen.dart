@@ -1,12 +1,20 @@
 import 'dart:math';
 
+import 'package:expense_tracker_app/screen/transaction_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'main_screen.dart';
 
-class HomeScreen extends StatelessWidget{
+class HomeScreen extends StatefulWidget{
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,9 +24,17 @@ class HomeScreen extends StatelessWidget{
           topRight: Radius.circular(20),
         ),
         child: BottomNavigationBar(
+          onTap: (value){
+            setState(() {
+              index = value;
+            });
+          },
           backgroundColor: Colors.white,
-            selectedItemColor: Colors.grey.shade800,
-            unselectedItemColor: Colors.grey.shade400,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            currentIndex: index,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.grey,
             elevation: 3,
             items: const [
               BottomNavigationBarItem(
@@ -48,8 +64,7 @@ class HomeScreen extends StatelessWidget{
           ),
             child: const Icon(Icons.add)),
       ),
-      body: const MainScreen(),
+      body: index == 0 ? MainScreen() : TransactionScreen(),
     );
   }
-
 }
