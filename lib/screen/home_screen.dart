@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:expense_tracker_app/screen/transaction_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'add_expense_screen.dart';
 import 'main_screen.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -46,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExpenseScreen()));
+        },
         shape: const CircleBorder(),
         child: Container(
           width: 60,
