@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget{
 class _HomeScreenState extends State<HomeScreen> {
 
   int index = 0;
+  final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
               index = value;
             });
+            _pageController.animateToPage(
+              value,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           },
           backgroundColor: Colors.white,
             showSelectedLabels: false,
@@ -48,7 +54,25 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExpenseScreen()));
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 400),
+              pageBuilder: (context, animation, secondaryAnimation) => const AddExpenseScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween<double>(begin: 0.80, end: 1.0)
+                        .chain(CurveTween(curve: Curves.easeInOut))
+                        .animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          );
+
         },
         shape: const CircleBorder(),
         child: Container(
@@ -67,7 +91,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
             child: const Icon(Icons.add)),
       ),
-      body: index == 0 ? MainScreen() : TransactionScreen(),
+      body:PageView(
+        controller: _pageController,
+        onPageChanged: (value) {
+          setState(() {
+            index = value;
+          });
+        },
+        children: const [
+          MainScreen(),
+          TransactionScreen(),
+        ],
+      ),
     );
   }
 }
