@@ -13,7 +13,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return SafeArea(
@@ -21,6 +20,7 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
+            // --- HEADER SECTION ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -37,10 +37,10 @@ class _MainScreenState extends State<MainScreen> {
                             color: Colors.yellow[700],
                           ),
                         ),
-                        Icon(Icons.person, color: Colors.black),
+                        const Icon(Icons.person, color: Colors.black),
                       ],
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -78,16 +78,20 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.settings, size: 26),
+                      icon: const Icon(Icons.settings, size: 26),
                     ),
                   ],
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+
+            // --- TOTAL BALANCE CARD ---
             Container(
               width: double.infinity,
-              height: screenHeight / 4,
+              constraints: BoxConstraints(
+                minHeight: screenHeight / 4.5,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 gradient: LinearGradient(
@@ -107,8 +111,9 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Total Balance',
@@ -118,98 +123,34 @@ class _MainScreenState extends State<MainScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     Text(
                       '₹ 1000.00',
-                      style:GoogleFonts.nunitoSans(
-                        fontSize: 40,
+                      style: GoogleFonts.nunitoSans(
+                        fontSize: 36,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 20),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white30,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.arrow_downward_outlined,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 5),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Income',
-                                    style: GoogleFonts.nunitoSans(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '₹2500.00',
-                                    style: GoogleFonts.nunitoSans(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          _buildIncomeExpenseRow(
+                            context,
+                            icon: Icons.arrow_downward_outlined,
+                            iconColor: Colors.green,
+                            title: 'Income',
+                            amount: '₹2500.00',
                           ),
-                          Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white30,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.arrow_upward_outlined,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 5),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Expense',
-                                    style: GoogleFonts.nunitoSans(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '₹800.00',
-                                    style: GoogleFonts.nunitoSans(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          _buildIncomeExpenseRow(
+                            context,
+                            icon: Icons.arrow_upward_outlined,
+                            iconColor: Colors.red,
+                            title: 'Expense',
+                            amount: '₹800.00',
                           ),
                         ],
                       ),
@@ -218,76 +159,128 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Transactions',
-                      style: GoogleFonts.nunitoSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'View All',
+            const SizedBox(height: 20),
+
+            // --- TRANSACTIONS LIST (NOW EXPANDABLE) ---
+            Expanded(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Transactions',
                         style: GoogleFonts.nunitoSans(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.blue,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 403,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ExpenseTile(
-                          title: 'Food',
-                          icon: Icons.fastfood,
-                          amount: '- ₹200.00',
-                          date: 'Today',
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'View All',
+                          style: GoogleFonts.nunitoSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.blue,
+                          ),
                         ),
-                        ExpenseTile(
-                          title: 'Shopping',
-                          icon: Icons.shopping_cart,
-                          amount: '- ₹200.00',
-                          date: 'Today',
-                        ),
-                        ExpenseTile(
-                          title: 'Entertainment',
-                          icon: Icons.local_movies,
-                          amount: '- ₹500.00',
-                          date: 'Yesterday',
-                        ),
-                        ExpenseTile(
-                          title: 'Travel',
-                          icon: Icons.airplane_ticket,
-                          amount: '- ₹1000.00',
-                          date: 'Yesterday',
-                        ),
-                        ExpenseTile(
-                          title: 'Bills',
-                          icon: Icons.inventory_2,
-                          amount: '- ₹500.00',
-                          date: 'Yesterday',
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                )
-              ],
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ExpenseTile(
+                            title: 'Food',
+                            icon: Icons.fastfood,
+                            amount: '- ₹200.00',
+                            date: 'Today',
+                          ),
+                          ExpenseTile(
+                            title: 'Shopping',
+                            icon: Icons.shopping_cart,
+                            amount: '- ₹200.00',
+                            date: 'Today',
+                          ),
+                          ExpenseTile(
+                            title: 'Entertainment',
+                            icon: Icons.local_movies,
+                            amount: '- ₹500.00',
+                            date: 'Yesterday',
+                          ),
+                          ExpenseTile(
+                            title: 'Travel',
+                            icon: Icons.airplane_ticket,
+                            amount: '- ₹1000.00',
+                            date: 'Yesterday',
+                          ),
+                          ExpenseTile(
+                            title: 'Bills',
+                            icon: Icons.inventory_2,
+                            amount: '- ₹500.00',
+                            date: 'Yesterday',
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget for Income/Expense display
+  Widget _buildIncomeExpenseRow(BuildContext context,
+      {required IconData icon,
+        required Color iconColor,
+        required String title,
+        required String amount}) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white30,
+          ),
+          child: Center(
+            child: Icon(
+              icon,
+              color: iconColor,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.nunitoSans(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              amount,
+              style: GoogleFonts.nunitoSans(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
