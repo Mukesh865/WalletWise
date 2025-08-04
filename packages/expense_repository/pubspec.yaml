@@ -1,0 +1,22 @@
+name: expense_repository
+description: The repo that handles expenses
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  firebase_auth: ^6.0.0
+  cloud_firestore: ^6.0.0
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

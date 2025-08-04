@@ -192,7 +192,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         firstDate: DateTime(2000),
                         lastDate: DateTime(2100),
                       );
-
                       if (pickedDate != null) {
                         setState(() {
                           addDateController.text =
