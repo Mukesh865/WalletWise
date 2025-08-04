@@ -150,7 +150,11 @@ class _MyChartState extends State<MyChart> {
         text = const Text('', style: style);
         break;
     }
-    return SideTitleWidget(space: 16, meta: meta, child: text);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
+    );
   }
 
   Widget leftTitles(double value, TitleMeta meta) {
@@ -178,8 +182,8 @@ class _MyChartState extends State<MyChart> {
     }
 
     return SideTitleWidget(
+      axisSide: meta.axisSide,
       space: 8,
-      meta: meta,
       child: Text(text, style: style),
     );
   }

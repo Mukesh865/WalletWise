@@ -161,7 +161,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
       );
       final entity = ExpenseEntity.fromExpense(expenseWithId);
 
-      await docRef.set(entity.toJson());
+      await docRef.set(entity.toEntity());
       return expenseWithId;
     } catch (e) {
       throw Exception('Failed to create expense: $e');
@@ -172,7 +172,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
   Future<Expense> updateExpense(Expense expense) async {
     try {
       final entity = ExpenseEntity.fromExpense(expense);
-      await _expensesCollection.doc(expense.id).update(entity.toJson());
+      await _expensesCollection.doc(expense.id).update(entity.toEntity());
       return expense;
     } catch (e) {
       throw Exception('Failed to update expense: $e');
