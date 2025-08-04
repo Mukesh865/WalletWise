@@ -30,7 +30,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
     try {
       final querySnapshot = await _categoriesCollection.get();
       return querySnapshot.docs
-          .map((doc) => CategoryEntity.fromJson(doc.data()).toCategory())
+          .map((doc) => CategoryEntity.fromEntity(doc.data()).toCategory())
           .toList();
     } catch (e) {
       throw Exception('Failed to get categories: $e');
@@ -42,7 +42,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
     try {
       final doc = await _categoriesCollection.doc(id).get();
       if (doc.exists) {
-        return CategoryEntity.fromJson(doc.data()!).toCategory();
+        return CategoryEntity.fromEntity(doc.data()!).toCategory();
       }
       return null;
     } catch (e) {
@@ -57,7 +57,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
       final categoryWithId = category.copyWith(id: docRef.id);
       final entity = CategoryEntity.fromCategory(categoryWithId);
       
-      await docRef.set(entity.toJson());
+      await docRef.set(entity.toEntity());
       return categoryWithId;
     } catch (e) {
       throw Exception('Failed to create category: $e');
@@ -68,7 +68,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
   Future<Category> updateCategory(Category category) async {
     try {
       final entity = CategoryEntity.fromCategory(category);
-      await _categoriesCollection.doc(category.id).update(entity.toJson());
+      await _categoriesCollection.doc(category.id).update(entity.toEntity());
       return category;
     } catch (e) {
       throw Exception('Failed to update category: $e');
@@ -340,7 +340,7 @@ class FirebaseExpenseRepository implements ExpenseRepository {
   @override
   Stream<List<Category>> watchCategories() {
     return _categoriesCollection.snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => CategoryEntity.fromJson(doc.data()).toCategory())
+        .map((doc) => CategoryEntity.fromEntity(doc.data()).toCategory())
         .toList());
   }
 

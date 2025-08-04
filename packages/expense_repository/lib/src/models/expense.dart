@@ -51,13 +51,13 @@ class Expense {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toEntity() {
     return {
       'id': id,
       'title': title,
       'description': description,
       'amount': amount,
-      'category': category.toJson(),
+      'category': category.toEntity(),
       'date': date.toIso8601String(),
       'type': type.name,
       'userId': userId,
@@ -66,22 +66,22 @@ class Expense {
     };
   }
 
-  factory Expense.fromJson(Map<String, dynamic> json) {
+  factory Expense.fromEntity(Map<String, dynamic> entity) {
     return Expense(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      amount: (json['amount'] as num).toDouble(),
-      category: Category.fromJson(json['category'] as Map<String, dynamic>),
-      date: DateTime.parse(json['date'] as String),
+      id: entity['id'] as String,
+      title: entity['title'] as String,
+      description: entity['description'] as String,
+      amount: (entity['amount'] as num).toDouble(),
+      category: Category.fromEntity(entity['category'] as Map<String, dynamic>),
+      date: DateTime.parse(entity['date'] as String),
       type: ExpenseType.values.firstWhere(
-        (e) => e.name == json['type'],
+        (e) => e.name == entity['type'],
         orElse: () => ExpenseType.expense,
       ),
-      userId: json['userId'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
+      userId: entity['userId'] as String?,
+      createdAt: DateTime.parse(entity['createdAt'] as String),
+      updatedAt: entity['updatedAt'] != null
+          ? DateTime.parse(entity['updatedAt'] as String)
           : null,
     );
   }

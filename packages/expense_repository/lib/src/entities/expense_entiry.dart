@@ -61,13 +61,13 @@ class ExpenseEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toEntity() {
     return {
       'id': id,
       'title': title,
       'description': description,
       'amount': amount,
-      'category': category.toJson(),
+      'category': category.toEntity(),
       'date': date,
       'type': type,
       'userId': userId,
@@ -76,18 +76,18 @@ class ExpenseEntity {
     };
   }
 
-  factory ExpenseEntity.fromJson(Map<String, dynamic> json) {
+  factory ExpenseEntity.fromJson(Map<String, dynamic> entity) {
     return ExpenseEntity(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      amount: (json['amount'] as num).toDouble(),
-      category: CategoryEntity.fromJson(json['category'] as Map<String, dynamic>),
-      date: json['date'] as String,
-      type: json['type'] as String,
-      userId: json['userId'] as String?,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String?,
+      id: entity['id'] as String,
+      title: entity['title'] as String,
+      description: entity['description'] as String,
+      amount: (entity['amount'] as num).toDouble(),
+      category: CategoryEntity.fromEntity(entity['category'] as Map<String, dynamic>),
+      date: entity['date'] as String,
+      type: entity['type'] as String,
+      userId: entity['userId'] as String?,
+      createdAt: entity['createdAt'] as String,
+      updatedAt: entity['updatedAt'] as String?,
     );
   }
 

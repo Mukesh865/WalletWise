@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "538311719792",
+    "project_id": "walletwise-bcdfb",
+    "storage_bucket": "walletwise-bcdfb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538311719792:android:82adcf6d63ad000723edb5",
+        "android_client_info": {
+          "package_name": "com.expense_tracker_app.expense_tracker_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApvyLSC2XeEhicn_kqDt8rYw41xYeqdJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -48,7 +48,7 @@ class CategoryEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toEntity() {
     return {
       'id': id,
       'name': name,
@@ -60,15 +60,15 @@ class CategoryEntity {
     };
   }
 
-  factory CategoryEntity.fromJson(Map<String, dynamic> json) {
+  factory CategoryEntity.fromEntity(Map<String, dynamic> entity) {
     return CategoryEntity(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String,
-      color: json['color'] as String,
-      type: json['type'] as String,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String?,
+      id: entity['id'] as String,
+      name: entity['name'] as String,
+      icon: entity['icon'] as String,
+      color: entity['color'] as String,
+      type: entity['type'] as String,
+      createdAt: entity['createdAt'] as String,
+      updatedAt: entity['updatedAt'] as String?,
     );
   }
 

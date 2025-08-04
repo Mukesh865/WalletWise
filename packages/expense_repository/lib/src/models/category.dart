@@ -37,7 +37,7 @@ class Category {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toEntity() {
     return {
       'id': id,
       'name': name,
@@ -49,19 +49,19 @@ class Category {
     };
   }
 
-  factory Category.fromJson(Map<String, dynamic> json) {
+  factory Category.fromEntity(Map<String, dynamic> entity) {
     return Category(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String,
-      color: json['color'] as String,
+      id: entity['id'] as String,
+      name: entity['name'] as String,
+      icon: entity['icon'] as String,
+      color: entity['color'] as String,
       type: CategoryType.values.firstWhere(
-        (e) => e.name == json['type'],
+        (e) => e.name == entity['type'],
         orElse: () => CategoryType.expense,
       ),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
+      createdAt: DateTime.parse(entity['createdAt'] as String),
+      updatedAt: entity['updatedAt'] != null
+          ? DateTime.parse(entity['updatedAt'] as String)
           : null,
     );
   }
