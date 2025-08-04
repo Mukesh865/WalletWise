@@ -17,7 +17,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   TextEditingController addNoteController = TextEditingController();
 
   String? selectedCategory;
-  List<String> categories = ['Food', 'Shopping', 'Entertainment', 'Travel'];
+  List<String> categories = ['Food', 'Shopping', 'Entertainment', 'Travel', 'Create Category'];
 
   @override
   void initState() {
@@ -55,6 +55,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     textAlign: TextAlign.left,
                     controller: addExpenseController,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       prefixIcon: const Icon(FontAwesomeIcons.indianRupeeSign),
                       hintText: '0',
                       hintStyle: GoogleFonts.nunitoSans(
@@ -128,6 +129,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                               break;
                             case 'Travel':
                               icon = FontAwesomeIcons.plane;
+                              break;
+                            case 'Create Category':
+                              icon = FontAwesomeIcons.add;
                               break;
                             default:
                               icon = FontAwesomeIcons.question;
