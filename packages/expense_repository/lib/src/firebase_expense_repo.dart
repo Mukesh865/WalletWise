@@ -213,9 +213,14 @@ class FirebaseExpenseRepository implements ExpenseRepository {
       }
 
       final querySnapshot = await query.get();
-      return querySnapshot.docs
-          .map((doc) => ExpenseEntity.fromJson(doc.data()).toExpense())
-          .fold(0.0, (sum, expense) => sum + expense.amount);
+      final expenses = querySnapshot.docs
+          .map((doc) => ExpenseEntity.fromJson(doc.data() as Map<String, dynamic>).toExpense())
+          .toList();
+      double total = 0.0;
+      for (final expense in expenses) {
+        total += expense.amount;
+      }
+      return total;
     } catch (e) {
       throw Exception('Failed to get total expenses: $e');
     }
@@ -245,9 +250,14 @@ class FirebaseExpenseRepository implements ExpenseRepository {
       }
 
       final querySnapshot = await query.get();
-      return querySnapshot.docs
-          .map((doc) => ExpenseEntity.fromJson(doc.data()).toExpense())
-          .fold(0.0, (sum, expense) => sum + expense.amount);
+      final expenses = querySnapshot.docs
+          .map((doc) => ExpenseEntity.fromJson(doc.data() as Map<String, dynamic>).toExpense())
+          .toList();
+      double total = 0.0;
+      for (final expense in expenses) {
+        total += expense.amount;
+      }
+      return total;
     } catch (e) {
       throw Exception('Failed to get total income: $e');
     }

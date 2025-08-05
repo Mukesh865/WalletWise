@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:expense_tracker_app/screen/transaction_screen.dart';
+import 'package:expense_tracker_app/screen/transaction_screen/pages/transaction_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'add_expense_screen.dart';
-import 'main_screen.dart';
+import '../../add_expense/pages/add_expense_screen.dart';
+import '../../main_screen/pages/main_screen.dart';
 
 class HomeScreen extends StatefulWidget{
   const HomeScreen({super.key});

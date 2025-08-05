@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../stats/chart.dart';
-import '../ui_help/category_widget.dart';
-import 'main_screen.dart';
+import '../../../stats/chart.dart';
+import '../../../ui_help/category_widget.dart';
+import '../../main_screen/pages/main_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
