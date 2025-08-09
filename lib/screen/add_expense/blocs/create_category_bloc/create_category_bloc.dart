@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:expense_repository/expense_repository.dart';
 import 'create_category_event.dart';
 import 'create_category_state.dart';

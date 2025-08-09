@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:expense_repository/expense_repository.dart';
 import 'package:expense_tracker_app/screen/transaction_screen/pages/transaction_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../add_expense/blocs/create_category_bloc/create_category_bloc.dart';
 import '../../add_expense/pages/add_expense_screen.dart';
 import '../../main_screen/pages/main_screen.dart';
 
@@ -53,12 +56,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.push(
             context,
             PageRouteBuilder(
               transitionDuration: const Duration(milliseconds: 400),
-              pageBuilder: (context, animation, secondaryAnimation) => const AddExpenseScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                // Wrap AddExpenseScreen with a BlocProvider here
+                return BlocProvider<CreateCategoryBloc>(
+                  create: (context) => CreateCategoryBloc(
+                    // You need to provide your repository implementation here
+                    expenseRepository: context.read<ExpenseRepository>(),
+                  ),
+                  child: const AddExpenseScreen(),
+                );
+              },
               transitionsBuilder: (context, animation, secondaryAnimation, child) {
                 return FadeTransition(
                   opacity: animation,
@@ -72,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           );
-
         },
         shape: const CircleBorder(),
         child: Container(
@@ -91,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
             child: const Icon(Icons.add)),
       ),
-      body:PageView(
+      body: PageView(
         controller: _pageController,
         onPageChanged: (value) {
           setState(() {
