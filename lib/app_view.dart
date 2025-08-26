@@ -1,5 +1,6 @@
 import 'package:expense_tracker_app/screen/home_screen/pages/home_screen.dart';
 import 'package:expense_repository/expense_repository.dart';
+import 'package:expense_tracker_app/screen/login_screen/pages/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,7 @@ class MyAppView extends StatelessWidget{
               outline: Colors.grey.shade400,
                 )
         ),
-        home: const HomeScreen(),
+        home: const LoginForm(),
       ),
     );
   }
