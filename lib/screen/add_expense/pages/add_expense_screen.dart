@@ -2,6 +2,12 @@ import 'dart:math';
 import 'package:expense_tracker_app/screen/add_expense/blocs/create_category_bloc/create_category_bloc.dart';
 import 'package:expense_tracker_app/screen/add_expense/blocs/create_category_bloc/create_category_event.dart';
 import 'package:expense_tracker_app/screen/add_expense/blocs/create_category_bloc/create_category_state.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/get_categories_bloc/get_categories_bloc.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/get_categories_bloc/get_categories_event.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/get_categories_bloc/get_categories_state.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/delete_category_bloc/delete_category_bloc.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/delete_category_bloc/delete_category_event.dart';
+import 'package:expense_tracker_app/screen/add_expense/blocs/delete_category_bloc/delete_category_state.dart';
 import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,13 +30,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _newCategoryController = TextEditingController();
 
   String? selectedCategory;
-  List<String> categories = ['Food', 'Shopping', 'Entertainment', 'Travel', 'Create Category'];
+  List<Category> categories = [];
+  List<String> categoryNames = [];
 
   @override
   void initState() {
     super.initState();
     DateTime today = DateTime.now();
     addDateController.text = "${today.day}/${today.month}/${today.year}";
+    
+    // Load categories when screen initializes
+    context.read<GetCategoriesBloc>().add(const GetCategories());
   }
 
   @override
@@ -43,44 +53,88 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     super.dispose();
   }
 
+  void _createDefaultCategories() {
+    final uuid = const Uuid();
+    final now = DateTime.now();
+    
+    final defaultCategories = [
+      {'name': 'Food', 'icon': 'utensils', 'color': '#FF6B6B'},
+      {'name': 'Shopping', 'icon': 'bagShopping', 'color': '#4ECDC4'},
+      {'name': 'Entertainment', 'icon': 'film', 'color': '#45B7D1'},
+      {'name': 'Travel', 'icon': 'plane', 'color': '#96CEB4'},
+    ];
+    
+    for (final categoryData in defaultCategories) {
+      final category = Category(
+        id: uuid.v4(),
+        name: categoryData['name']!,
+        icon: categoryData['icon']!,
+        color: categoryData['color']!,
+        type: CategoryType.expense,
+        createdAt: now,
+      );
+      
+      context.read<CreateCategoryBloc>().add(CreateCategory(category: category));
+    }
+  }
+
+  void _updateCategoryNames() {
+    setState(() {
+      categoryNames = categories.map((cat) => cat.name).toList();
+      categoryNames.add('Create Category');
+    });
+  }
+
   void _showCreateCategoryDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Create a New Category'),
           content: TextField(
             controller: _newCategoryController,
             decoration: const InputDecoration(hintText: "Category Name"),
+            autofocus: true,
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('CANCEL'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
                 _newCategoryController.clear();
               },
             ),
             TextButton(
               child: const Text('SAVE'),
               onPressed: () {
-                if (_newCategoryController.text.isNotEmpty) {
-                  final newCategory = _newCategoryController.text;
+                if (_newCategoryController.text.trim().isNotEmpty) {
+                  final newCategoryName = _newCategoryController.text.trim();
                   final uuid = const Uuid();
                   final now = DateTime.now();
                   
                   final category = Category(
                     id: uuid.v4(),
-                    name: newCategory,
-                    icon: 'question', // Default icon
+                    name: newCategoryName,
+                    icon: 'category', // Default icon
                     color: '#757575', // Default gray color
                     type: CategoryType.expense,
                     createdAt: now,
                   );
                   
+                  // Create the category using the parent context
                   context.read<CreateCategoryBloc>().add(CreateCategory(category: category));
-                  Navigator.of(context).pop();
+                  
+                  // Close dialog and clear controller
+                  Navigator.of(dialogContext).pop();
                   _newCategoryController.clear();
+                } else {
+                  // Show error for empty category name
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a category name'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
             ),
@@ -90,21 +144,135 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
+  void _deleteCategory(String categoryId, String categoryName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete Category'),
+          content: Text('Are you sure you want to delete "$categoryName"? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('DELETE', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context.read<DeleteCategoryBloc>().add(DeleteCategory(categoryId: categoryId));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final fieldWidth = screenWidth * 0.85;
 
-    return BlocListener<CreateCategoryBloc, CreateCategoryState>(
-      listener: (context, state) {
-        if(state is CreateCategorySuccess){
-          setState(() {
-            categories.insert(categories.length -1, state.category.name);
-            selectedCategory = state.category.name;
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CreateCategoryBloc, CreateCategoryState>(
+          listener: (context, state) {
+            if (state is CreateCategorySuccess) {
+              // Add the new category to the list
+              setState(() {
+                categories.add(state.category);
+                _updateCategoryNames();
+                selectedCategory = state.category.name;
+              });
+              
+              // Show success message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Category "${state.category.name}" created successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+              // Refresh categories from the repository
+              context.read<GetCategoriesBloc>().add(const GetCategories());
+            } else if (state is CreateCategoryFailure) {
+              // Show error message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error: ${state.message}'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<DeleteCategoryBloc, DeleteCategoryState>(
+          listener: (context, state) {
+            if (state is DeleteCategorySuccess) {
+              // Remove the deleted category from the list
+              setState(() {
+                categories.removeWhere((cat) => cat.id == state.categoryId);
+                _updateCategoryNames();
+                
+                // If the deleted category was selected, clear the selection
+                if (selectedCategory != null) {
+                  final deletedCategory = categories.firstWhere(
+                    (cat) => cat.id == state.categoryId,
+                    orElse: () => Category(
+                      id: '',
+                      name: '',
+                      icon: '',
+                      color: '',
+                      type: CategoryType.expense,
+                      createdAt: DateTime.now(),
+                    ),
+                  );
+                  if (deletedCategory.name == selectedCategory) {
+                    selectedCategory = null;
+                  }
+                }
+              });
+              
+              // Show success message
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Category deleted successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+              // Refresh categories from the repository
+              context.read<GetCategoriesBloc>().add(const GetCategories());
+            } else if (state is DeleteCategoryFailure) {
+              // Show error message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error: ${state.message}'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<GetCategoriesBloc, GetCategoriesState>(
+          listener: (context, state) {
+            if (state is GetCategoriesSuccess) {
+              setState(() {
+                categories = state.categories;
+                _updateCategoryNames();
+                
+                // If no categories exist, create some default ones
+                if (categories.isEmpty) {
+                  _createDefaultCategories();
+                }
+              });
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface),
@@ -191,14 +359,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                               });
                             }
                           },
-                          items: categories.map<DropdownMenuItem<String>>((String value) {
+                          items: categoryNames.map<DropdownMenuItem<String>>((String value) {
                             IconData icon;
                             switch (value) {
                               case 'Food':
                                 icon = FontAwesomeIcons.utensils;
                                 break;
-                                            case 'Shopping':
-                icon = FontAwesomeIcons.bagShopping;
+                              case 'Shopping':
+                                icon = FontAwesomeIcons.bagShopping;
                                 break;
                               case 'Entertainment':
                                 icon = FontAwesomeIcons.film;
@@ -206,19 +374,53 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                               case 'Travel':
                                 icon = FontAwesomeIcons.plane;
                                 break;
-                                            case 'Create Category':
-                icon = FontAwesomeIcons.plus;
+                              case 'Create Category':
+                                icon = FontAwesomeIcons.plus;
                                 break;
                               default:
                                 icon = FontAwesomeIcons.question;
                             }
+                            
+                            // Find the category object for this value
+                            final category = categories.firstWhere(
+                              (cat) => cat.name == value,
+                              orElse: () => Category(
+                                id: '',
+                                name: '',
+                                icon: '',
+                                color: '',
+                                type: CategoryType.expense,
+                                createdAt: DateTime.now(),
+                              ),
+                            );
+                            
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Row(
                                 children: [
                                   FaIcon(icon, size: 18, color: Colors.grey[700]),
                                   const SizedBox(width: 8),
-                                  Text(value),
+                                  Expanded(
+                                    child: Text(value),
+                                  ),
+                                  if (value != 'Create Category' && category.id.isNotEmpty)
+                                    GestureDetector(
+                                      onTap: () {
+                                        _deleteCategory(category.id, category.name);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.shade100,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Icon(
+                                          Icons.delete_outline,
+                                          size: 16,
+                                          color: Colors.red.shade600,
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );
@@ -234,7 +436,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       controller: addNoteController,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(FontAwesomeIcons.noteSticky, color: Colors.grey),
-                        fillColor: Colors.white,
                         hintText: "Note",
                         hintStyle: GoogleFonts.nunitoSans(
                           color: Colors.grey,

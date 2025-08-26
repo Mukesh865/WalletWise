@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../add_expense/blocs/create_category_bloc/create_category_bloc.dart';
+import '../../add_expense/blocs/get_categories_bloc/get_categories_bloc.dart';
+import '../../add_expense/blocs/delete_category_bloc/delete_category_bloc.dart';
 import '../../add_expense/pages/add_expense_screen.dart';
 import '../../main_screen/pages/main_screen.dart';
 
@@ -62,12 +64,25 @@ class _HomeScreenState extends State<HomeScreen> {
             PageRouteBuilder(
               transitionDuration: const Duration(milliseconds: 400),
               pageBuilder: (context, animation, secondaryAnimation) {
-                // Wrap AddExpenseScreen with a BlocProvider here
-                return BlocProvider<CreateCategoryBloc>(
-                  create: (context) => CreateCategoryBloc(
-                    // You need to provide your repository implementation here
-                    expenseRepository: context.read<ExpenseRepository>(),
-                  ),
+                // Wrap AddExpenseScreen with multiple BlocProviders
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider<CreateCategoryBloc>(
+                      create: (context) => CreateCategoryBloc(
+                        expenseRepository: context.read<ExpenseRepository>(),
+                      ),
+                    ),
+                    BlocProvider<GetCategoriesBloc>(
+                      create: (context) => GetCategoriesBloc(
+                        expenseRepository: context.read<ExpenseRepository>(),
+                      ),
+                    ),
+                    BlocProvider<DeleteCategoryBloc>(
+                      create: (context) => DeleteCategoryBloc(
+                        expenseRepository: context.read<ExpenseRepository>(),
+                      ),
+                    ),
+                  ],
                   child: const AddExpenseScreen(),
                 );
               },
